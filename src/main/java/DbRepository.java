@@ -14,15 +14,7 @@ public class DbRepository {
     private final String SELECT_ALL_QUERY = "SELECT * FROM student";
 
     private DbRepository() {
-        try {
-            this.connection = DriverManager.getConnection(URL);
-            Statement statement = connection.createStatement();
-            statement.executeUpdate(CREATE_TABLE);
-            statement.close();
-        } catch (SQLException e) {
-            System.out.println("Ошибка SQL: " + e.getMessage());
-        }
-
+        this.connect();
     }
 
     public static DbRepository getInstance() {
@@ -34,7 +26,7 @@ public class DbRepository {
             preparedStatement.setString(1, student.getFirstName());
             preparedStatement.setString(2, student.getLastName());
             preparedStatement.setInt(3, student.getAverageGrade());
-            int resultSet = preparedStatement.executeUpdate();
+            int result = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Ошибка SQL: " + e.getMessage());
         }
@@ -103,10 +95,24 @@ public class DbRepository {
         return result;
     }
 
+    public void connect() {
+        if (Objects.isNull(connection)) {
+            try {
+                connection = DriverManager.getConnection(URL);
+                Statement statement = connection.createStatement();
+                statement.executeUpdate(CREATE_TABLE);
+                statement.close();
+            } catch (SQLException e) {
+                System.out.println("Ошибка SQL: " + e.getMessage());
+            }
+        }
+    }
+
     public void close() {
         if (!Objects.isNull(connection)) {
             try {
                 connection.close();
+                connection = null;
             } catch (SQLException e) {
                 System.out.println("Ошибка SQL: " + e.getMessage());
             }

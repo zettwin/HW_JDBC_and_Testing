@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Student {
     private long id;
     private String firstName;
@@ -65,5 +67,17 @@ public class Student {
 
     public int getAverageGrade() {
         return averageGrade;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Student student = (Student) o;
+        return id == student.id && averageGrade == student.averageGrade && Objects.equals(firstName, student.firstName) && Objects.equals(lastName, student.lastName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, averageGrade);
     }
 }
